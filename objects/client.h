@@ -24,6 +24,7 @@
 
 #include "stack.h"
 #include "objects/window.h"
+#include "xcb/damage.h"
 
 #define CLIENT_SELECT_INPUT_EVENT_MASK (XCB_EVENT_MASK_STRUCTURE_NOTIFY \
                                         | XCB_EVENT_MASK_PROPERTY_CHANGE \
@@ -143,6 +144,7 @@ struct client_t
         /** The drawable for this bar. */
         drawable_t *drawable;
     } titlebar[CLIENT_TITLEBAR_COUNT];
+    xcb_damage_damage_t damage;
 };
 
 ARRAY_FUNCS(client_t *, client, DO_NOTHING)

@@ -43,6 +43,7 @@
 #include <xcb/xcb_icccm.h>
 #include <xcb/xcb_event.h>
 #include <xcb/xkb.h>
+#include <xcb/damage.h>
 
 #define DO_EVENT_HOOK_CALLBACK(type, xcbtype, xcbeventprefix, arraytype, match) \
     static void \
@@ -902,6 +903,46 @@ event_handle_randr_output_change_notify(xcb_randr_notify_event_t *ev)
     }
 }
 
+static void
+event_handle_damage_notify(xcb_damage_notify_event_t *ev)
+{
+    client_t* c;
+    area_t area;
+
+    /*
+    xcb_damage_subtract(connection, ev->damage, XCB_XFIXES_REGION_NONE, XCB_XFIXES_REGION_NONE);
+    xcb_flush(connection);
+    if ((c = client_getbywin(ev->drawable))) {
+        area.x = ev->area.x;
+        area.y = ev->area.y;
+        area.width = ev->area.width;
+        area.height = ev->area.height;
+        client_damage(c, area);
+    }
+    else {
+        int phys_screen;
+
+        // if it's a root
+        for(phys_screen = 0; phys_screen < globalconf.screens.len; phys_screen++)
+        {
+            if (xutil_screen_get(globalconf.connection, phys_screen)->root == ev->drawable) {
+                lua_pushinteger(globalconf.L, ev->area.x);
+                lua_pushinteger(globalconf.L, ev->area.y);
+                lua_pushinteger(globalconf.L, ev->area.width);
+                lua_pushinteger(globalconf.L, ev->area.height);
+                screen_emit_signal(globalconf.L,
+                        &globalconf.screens.tab[phys_screen], "damage", 4);
+                break;
+            }
+        }
+    }
+    */
+
+    printf("Got damage!\n");
+
+    return 0;
+}
+
 
 /** The shape notify event handler.
  * \param ev The event.
@@ -977,6 +1018,7 @@ event_handle_reparentnotify(xcb_reparent_notify_event_t *ev)
     }
 }
 
+
 static void
 event_handle_selectionclear(xcb_selection_clear_event_t *ev)
 {
@@ -1048,6 +1090,8 @@ void event_handle(xcb_generic_event_t *event)
 {
     uint8_t response_type = XCB_EVENT_RESPONSE_TYPE(event);
 
+    printf("EVENT: %d - %d\n", response_type, globalconf.event_base_damage);
+
     if (should_ignore(event))
         return;
 
@@ -1090,6 +1134,7 @@ void event_handle(xcb_generic_event_t *event)
     EXTENSION_EVENT(randr, XCB_RANDR_NOTIFY, event_handle_randr_output_change_notify);
     EXTENSION_EVENT(shape, XCB_SHAPE_NOTIFY, event_handle_shape_notify);
     EXTENSION_EVENT(xkb, 0, event_handle_xkb_notify);
+    EXTENSION_EVENT(damage, XCB_DAMAGE_NOTIFY, event_handle_damage_notify);
 #undef EXTENSION_EVENT
 }
 
@@ -1108,6 +1153,10 @@ void event_init(void)
     reply = xcb_get_extension_data(globalconf.connection, &xcb_xkb_id);
     if (reply && reply->present)
         globalconf.event_base_xkb = reply->first_event;
+
+    reply = xcb_get_extension_data(globalconf.connection, &xcb_damage_id);
+    if (reply && reply->present)
+        globalconf.event_base_damage = reply->first_event;
 }
 
 // vim: filetype=c:expandtab:shiftwidth=4:tabstop=8:softtabstop=4:textwidth=80

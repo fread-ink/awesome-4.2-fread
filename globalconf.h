@@ -113,6 +113,7 @@ typedef struct
     uint8_t event_base_shape;
     uint8_t event_base_xkb;
     uint8_t event_base_randr;
+    uint8_t event_base_damage;
     /** Clients list */
     client_array_t clients;
     /** Embedded windows */

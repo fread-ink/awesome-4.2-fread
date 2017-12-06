@@ -133,6 +133,7 @@ set(AWESOME_DEPENDENCIES
     x11
     xcb-cursor
     xcb-randr
+    xcb-damage
     xcb-xtest
     xcb-xinerama
     xcb-shape

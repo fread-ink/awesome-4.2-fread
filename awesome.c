@@ -47,6 +47,7 @@
 
 #include <xcb/bigreq.h>
 #include <xcb/randr.h>
+#include <xcb/damage.h>
 #include <xcb/xcb_atom.h>
 #include <xcb/xcb_aux.h>
 #include <xcb/xcb_event.h>
@@ -679,6 +680,7 @@ main(int argc, char **argv)
     xcb_prefetch_extension_data(globalconf.connection, &xcb_big_requests_id);
     xcb_prefetch_extension_data(globalconf.connection, &xcb_test_id);
     xcb_prefetch_extension_data(globalconf.connection, &xcb_randr_id);
+    xcb_prefetch_extension_data(globalconf.connection, &xcb_damage_id);
     xcb_prefetch_extension_data(globalconf.connection, &xcb_xinerama_id);
     xcb_prefetch_extension_data(globalconf.connection, &xcb_shape_id);
 
@@ -825,6 +827,13 @@ main(int argc, char **argv)
     /* Setup the main context */
     g_main_context_set_poll_func(g_main_context_default(), &a_glib_poll);
     gettimeofday(&last_wakeup, NULL);
+
+
+    xcb_damage_damage_t damage = xcb_generate_id(globalconf.connection);
+    xcb_damage_create(globalconf.connection,
+                      damage,
+                      globalconf.screen->root,
+                      XCB_DAMAGE_REPORT_LEVEL_BOUNDING_BOX);
 
     /* main event loop (if not NULL, awesome.quit() was already called) */
     if (globalconf.loop == NULL)
