@@ -2141,6 +2141,16 @@ client_unban(client_t *c)
     }
 }
 
+void
+client_damage(client_t *c, area_t area)
+{
+    lua_State *L = globalconf_get_lua_State();
+
+    luaA_object_push(L, c);
+    luaA_pusharea(L, area);
+    luaA_class_emit_signal(L, &client_class, "damage", 2);
+}
+
 /** Unmanage a client.
  * \param c The client.
  * \param window_valid Is the client's window still valid?

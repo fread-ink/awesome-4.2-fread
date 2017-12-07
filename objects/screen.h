@@ -56,6 +56,7 @@ void screen_client_moveto(client_t *, screen_t *, bool);
 void screen_update_primary(void);
 void screen_update_workarea(screen_t *);
 screen_t *screen_get_primary(void);
+void screen_damage(screen_t *s, area_t area);
 
 screen_t *luaA_checkscreen(lua_State *, int);
 

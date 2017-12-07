@@ -907,41 +907,31 @@ static void
 event_handle_damage_notify(xcb_damage_notify_event_t *ev)
 {
     client_t* c;
+    screen_t* s;
     area_t area;
 
-    /*
-    xcb_damage_subtract(connection, ev->damage, XCB_XFIXES_REGION_NONE, XCB_XFIXES_REGION_NONE);
-    xcb_flush(connection);
-    if ((c = client_getbywin(ev->drawable))) {
-        area.x = ev->area.x;
-        area.y = ev->area.y;
-        area.width = ev->area.width;
-        area.height = ev->area.height;
-        client_damage(c, area);
-    }
-    else {
-        int phys_screen;
-
-        // if it's a root
-        for(phys_screen = 0; phys_screen < globalconf.screens.len; phys_screen++)
-        {
-            if (xutil_screen_get(globalconf.connection, phys_screen)->root == ev->drawable) {
-                lua_pushinteger(globalconf.L, ev->area.x);
-                lua_pushinteger(globalconf.L, ev->area.y);
-                lua_pushinteger(globalconf.L, ev->area.width);
-                lua_pushinteger(globalconf.L, ev->area.height);
-                screen_emit_signal(globalconf.L,
-                        &globalconf.screens.tab[phys_screen], "damage", 4);
-                break;
-            }
-        }
-    }
-    */
-
+    // Tell the X server that we've dealt with this damage.
+    // (further damage to this region will not be reported until we do so)
     xcb_damage_subtract(globalconf.connection, ev->damage, XCB_NONE, XCB_NONE);
     xcb_flush(globalconf.connection);
 
-    printf("Got damage!\n");
+    area.x = ev->area.x;
+    area.y = ev->area.y;
+    area.width = ev->area.width;
+    area.height = ev->area.height;
+
+    // is this damage to a client?
+    if((c = client_getbywin(ev->drawable))) {
+
+      client_damage(c, area);
+
+    } else if((s = screen_getbycoord(area.x, area.y))) { // damage to a screen?
+
+      screen_damage(s, area);
+      
+    } else {
+      // not sure if this can even happen
+    }
 
     return 0;
 }
@@ -1092,8 +1082,6 @@ should_ignore(xcb_generic_event_t *event)
 void event_handle(xcb_generic_event_t *event)
 {
     uint8_t response_type = XCB_EVENT_RESPONSE_TYPE(event);
-
-    //    printf("EVENT: %d - %d\n", response_type, globalconf.event_base_damage);
 
     if (should_ignore(event))
         return;

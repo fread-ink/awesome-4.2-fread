@@ -763,6 +763,17 @@ screen_getbycoord(int x, int y)
     return nearest_screen;
 }
 
+void
+screen_damage(screen_t *s, area_t area)
+{
+    lua_State *L = globalconf_get_lua_State();
+
+    luaA_object_push(L, s);
+    luaA_pusharea(L, area);
+    luaA_class_emit_signal(L, &screen_class, "damage", 2);
+}
+
+
 /** Are the given coordinates in a given screen?
  * \param screen The logical screen number.
  * \param x X coordinate

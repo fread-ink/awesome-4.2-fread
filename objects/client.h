@@ -202,6 +202,7 @@ void client_send_configure(client_t *);
 void client_find_transient_for(client_t *);
 drawable_t *client_get_drawable(client_t *, int, int);
 drawable_t *client_get_drawable_offset(client_t *, int *, int *);
+void client_damage(client_t *c, area_t area);
 
 /** Put client on top of the stack.
  * \param c The client to raise.
