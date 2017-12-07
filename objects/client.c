@@ -1531,7 +1531,9 @@ client_manage(xcb_window_t w, xcb_get_geometry_reply_t *wgeom, xcb_get_window_at
 
     c->damage = xcb_generate_id(globalconf.connection);
     xcb_damage_create(globalconf.connection, c->damage, c->window,
-            XCB_DAMAGE_REPORT_LEVEL_BOUNDING_BOX);
+                      XCB_DAMAGE_REPORT_LEVEL_BOUNDING_BOX);
+    //                      XCB_DAMAGE_REPORT_LEVEL_RAW_RECTANGLES);
+
 
     /* client is still on top of the stack; emit signal */
     luaA_object_emit_signal(L, -1, "manage", 0);

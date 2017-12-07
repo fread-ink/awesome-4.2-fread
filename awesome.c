@@ -828,12 +828,28 @@ main(int argc, char **argv)
     g_main_context_set_poll_func(g_main_context_default(), &a_glib_poll);
     gettimeofday(&last_wakeup, NULL);
 
+    xcb_damage_query_version_reply_t *xdamage_version = xcb_damage_query_version_reply(
+                globalconf.connection, 
+                xcb_damage_query_version(
+                                         globalconf.connection,
+                                         XCB_DAMAGE_MAJOR_VERSION,
+                                         XCB_DAMAGE_MINOR_VERSION
+                                         ),
+                NULL);
+    if(!xdamage_version) {
+        printf("Failed to get XDamage extension version\n");
+    } else {
+      printf("Loaded XDamage extension version: %d.%d\n",
+             xdamage_version->major_version, xdamage_version->minor_version);
+    }
+    free(xdamage_version);
 
     xcb_damage_damage_t damage = xcb_generate_id(globalconf.connection);
     xcb_damage_create(globalconf.connection,
                       damage,
                       globalconf.screen->root,
                       XCB_DAMAGE_REPORT_LEVEL_BOUNDING_BOX);
+                      //                      XCB_DAMAGE_REPORT_LEVEL_RAW_RECTANGLES);
 
     /* main event loop (if not NULL, awesome.quit() was already called) */
     if (globalconf.loop == NULL)

@@ -938,6 +938,9 @@ event_handle_damage_notify(xcb_damage_notify_event_t *ev)
     }
     */
 
+    xcb_damage_subtract(globalconf.connection, ev->damage, XCB_NONE, XCB_NONE);
+    xcb_flush(globalconf.connection);
+
     printf("Got damage!\n");
 
     return 0;
@@ -1090,7 +1093,7 @@ void event_handle(xcb_generic_event_t *event)
 {
     uint8_t response_type = XCB_EVENT_RESPONSE_TYPE(event);
 
-    printf("EVENT: %d - %d\n", response_type, globalconf.event_base_damage);
+    //    printf("EVENT: %d - %d\n", response_type, globalconf.event_base_damage);
 
     if (should_ignore(event))
         return;
