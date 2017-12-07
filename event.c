@@ -42,6 +42,7 @@
 #include <xcb/xcb_atom.h>
 #include <xcb/xcb_icccm.h>
 #include <xcb/xcb_event.h>
+#include <xcb/xcb_aux.h>
 #include <xcb/xkb.h>
 #include <xcb/damage.h>
 
@@ -910,11 +911,6 @@ event_handle_damage_notify(xcb_damage_notify_event_t *ev)
     screen_t* s;
     area_t area;
 
-    // Tell the X server that we've dealt with this damage.
-    // (further damage to this region will not be reported until we do so)
-    xcb_damage_subtract(globalconf.connection, ev->damage, XCB_NONE, XCB_NONE);
-    xcb_flush(globalconf.connection);
-
     area.x = ev->area.x;
     area.y = ev->area.y;
     area.width = ev->area.width;
@@ -931,9 +927,22 @@ event_handle_damage_notify(xcb_damage_notify_event_t *ev)
       
     } else {
       // not sure if this can even happen
+      // (psychon says it can but that it probably doesn't matter)
     }
 
-    return 0;
+    // Tell the X server that we've dealt with this damage.
+    // (further damage to this region will not be reported until we do so)
+    xcb_damage_subtract(globalconf.connection, ev->damage, XCB_NONE, XCB_NONE);
+    xcb_aux_sync(globalconf.connection);
+
+    /*
+      The above used to be a call to xcb_flush() but:
+
+      <juul> what is the difference between xcb_aux_sync and xcb_flush?
+      <psychon> xcb_aux_sync() does xcb_get_input_focus() + xcb_get_input_focus_reply(). xcb_flush() just sends all pending requests to the server. since xcb_aux_sync() sends a request and waits for its answer (and since the X11 server handles all requests in-order), xcb_aux_sync() actually makes sure that everything that you "did" before is already processed by the X11 server while xcb_flush() just does write(), so it is not even guaranteed that the X11 server received the requests yet  
+    */
+
+    return;
 }
 
 

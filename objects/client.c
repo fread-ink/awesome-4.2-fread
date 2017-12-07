@@ -2148,7 +2148,8 @@ client_damage(client_t *c, area_t area)
 
     luaA_object_push(L, c);
     luaA_pusharea(L, area);
-    luaA_class_emit_signal(L, &client_class, "damage", 2);
+    luaA_object_emit_signal(L, -2, "damage", 1);
+    lua_pop(L, 1);
 }
 
 /** Unmanage a client.
