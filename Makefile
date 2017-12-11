@@ -1,3 +1,7 @@
+
+# Instruct cmake to compile against luajit
+CMAKE_ARGS:="-DLUA_LIBRARY=/usr/lib/$(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)/libluajit-5.1.so -DLUA_INCLUDE_DIR=/usr/include/luajit-2.0"
+
 ifeq (,$(VERBOSE))
     MAKEFLAGS:=$(MAKEFLAGS)s
     ECHO=echo
@@ -17,7 +21,7 @@ $(BUILDDIR)/Makefile:
 	$(ECHO)
 	mkdir -p $(BUILDDIR)
 	$(ECHO) "Running cmake…"
-	cd $(BUILDDIR) && cmake $(CMAKE_ARGS) "$(@D)" ..
+	cd $(BUILDDIR) && cmake "${CMAKE_ARGS}" "$(@D)" ..
 
 cmake-build: $(BUILDDIR)/Makefile
 	$(ECHO) "Building…"
