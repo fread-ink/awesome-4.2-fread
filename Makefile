@@ -1,6 +1,5 @@
-
-# Instruct cmake to compile against luajit
-CMAKE_ARGS:="-DLUA_LIBRARY=/usr/lib/$(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)/libluajit-5.1.so -DLUA_INCLUDE_DIR=/usr/include/luajit-2.0"
+# compile against luajit and use '/usr' as install prefix
+CMAKE_ARGS:="-DLUA_LIBRARY=/usr/lib/$(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)/libluajit-5.1.so -DLUA_INCLUDE_DIR=/usr/include/luajit-2.0 -DCMAKE_INSTALL_PREFIX=/usr"
 
 ifeq (,$(VERBOSE))
     MAKEFLAGS:=$(MAKEFLAGS)s

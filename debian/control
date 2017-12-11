@@ -1,0 +1,74 @@
+Source: awesome-fread
+Section: x11
+Priority: optional
+Maintainer: Marc Juul <juul@fread.ink>
+Build-Depends: 
+               asciidoc,
+               debhelper (>= 9),
+               cmake,
+               imagemagick,
+               libcairo2-dev,
+               libdbus-1-dev,
+               libgdk-pixbuf2.0-dev,
+               libglib2.0-dev,
+               libluajit-5.1-dev,
+               libpango1.0-dev,
+               libstartup-notification0-dev,
+               libx11-xcb-dev,
+               libxcb-cursor-dev,
+               libxcb-damage0-dev,
+               libxcb-icccm4-dev,
+               libxcb-keysyms1-dev,
+               libxcb-randr0-dev,
+               libxcb-shape0-dev,
+               libxcb-util0-dev,
+               libxcb-xinerama0-dev,
+               libxcb-xkb-dev,
+               libxcb-xrm-dev,
+               libxcb-xtest0-dev,
+               libxdg-basedir-dev,
+               libxkbcommon-dev,
+               libxkbcommon-x11-dev,
+               lua-discount,
+               lua-lgi (>= 0.8.0),
+               lua-lgi-dev,
+               luajit,
+               x11proto-core-dev,
+               xmlto,
+               zsh
+Standards-Version: 3.9.5
+Homepage: https://awesomewm.org/
+Vcs-Git: https://github.com/fread-ink/awesome-4.2-fread
+Vcs-Browser: https://github.com/fread-ink/awesome-4.2-fread
+
+Package: awesome-fread
+Architecture: any
+Recommends: feh, rlwrap, x11-xserver-utils
+Suggests: awesome-doc
+Depends: default-dbus-session-bus | dbus-session-bus,
+         gir1.2-freedesktop,
+         gir1.2-pango-1.0,
+         libxcb-damage0,
+         lua-lgi (>= 0.8.0),
+         menu,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Provides: notification-daemon, x-window-manager
+Description: highly configurable X window manager (fread.ink version)
+ This is a version of the awesome X window manager patched for use with
+ the fread.ink ebook reader GNU/Linux distro.
+ .
+ awesome manages windows dynamically in floating or tiled layouts. It is
+ primarily targeted at power users, developers, and all those dealing with
+ everyday computing tasks and looking for fine-grained control over their
+ graphical environment.
+ .
+ It is highly extensible and scriptable via the Lua programming language,
+ providing an easy-to-use and very well documented API to configure its
+ behavior.
+ .
+ awesome uses tags instead of workspaces, which gives better flexibility
+ in displaying windows, and can be entirely keyboard-driven, not needing a
+ mouse. It also supports multi-headed configurations; uses XCB instead of
+ Xlib for better performance; implements many freedesktop standards; and
+ can be controlled over D-Bus from awesome-client.
